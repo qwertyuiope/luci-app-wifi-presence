@@ -1,0 +1,77 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+msgid "WiFi Presence"
+msgstr ""
+
+msgid "Monitor WiFi device presence, manage privacy rules, and detect unknown devices with Telegram notifications."
+msgstr ""
+
+msgid "General Settings"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Enable WiFi presence monitoring service"
+msgstr ""
+
+msgid "Check Interval"
+msgstr ""
+
+msgid "How often to check for device presence (minutes)"
+msgstr ""
+
+msgid "Telegram Bot Token"
+msgstr ""
+
+msgid "Bot token from @BotFather"
+msgstr ""
+
+msgid "Telegram Chat ID"
+msgstr ""
+
+msgid "Chat ID for notifications"
+msgstr ""
+
+msgid "Unknown Device Alerts"
+msgstr ""
+
+msgid "Send Telegram alert when an unrecognized device joins WiFi"
+msgstr ""
+
+msgid "Test Notification"
+msgstr ""
+
+msgid "Send Test Message"
+msgstr ""
+
+msgid "Watched Devices"
+msgstr ""
+
+msgid "Devices to monitor for WiFi connect/disconnect events. Telegram alerts are sent on state changes."
+msgstr ""
+
+msgid "Privacy Rules"
+msgstr ""
+
+msgid "Block network traffic for devices when household members are home. Uses nftables firewall rules."
+msgstr ""
+
+msgid "Target MAC"
+msgstr ""
+
+msgid "MAC address of the device to block"
+msgstr ""
+
+msgid "Block when home"
+msgstr ""
+
+msgid "Block when away"
+msgstr ""
+
+msgid "Household Members"
+msgstr ""
+
+msgid "Device names that trigger this rule"
+msgstr ""

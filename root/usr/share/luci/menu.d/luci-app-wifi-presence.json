@@ -1,0 +1,14 @@
+{
+	"admin/services/wifi-presence": {
+		"title": "WiFi Presence",
+		"order": 50,
+		"action": {
+			"type": "view",
+			"path": "wifi-presence"
+		},
+		"depends": {
+			"acl": ["luci-app-wifi-presence"],
+			"uci": {"wifi-presence": true}
+		}
+	}
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+# First-install setup for luci-app-wifi-presence
+
+# Enable the service
+/etc/init.d/wifi-presence enable
+
+exit 0

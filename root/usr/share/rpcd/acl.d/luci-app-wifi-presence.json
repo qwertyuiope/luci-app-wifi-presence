@@ -1,0 +1,17 @@
+{
+	"luci-app-wifi-presence": {
+		"description": "Grant access to WiFi Presence configuration",
+		"read": {
+			"uci": ["wifi-presence"],
+			"file": {
+				"/tmp/wifi-presence/*": ["read"],
+				"/etc/wifi-known-macs": ["read"],
+				"/usr/libexec/wifi-presence.sh": ["exec"],
+				"/usr/libexec/wifi-presence.sh --test": ["exec"]
+			}
+		},
+		"write": {
+			"uci": ["wifi-presence"]
+		}
+	}
+}
