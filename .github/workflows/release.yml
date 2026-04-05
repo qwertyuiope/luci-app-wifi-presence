@@ -1,0 +1,90 @@
+name: Build and Release .ipk
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Build .ipk
+        run: |
+          set -e
+          PKG_NAME="luci-app-wifi-presence"
+          VERSION="${{ steps.version.outputs.version }}"
+          ARCH="all"
+          IPK_FILE="${PKG_NAME}_${VERSION}_${ARCH}.ipk"
+
+          # Stage all package files into a single tree
+          mkdir -p staging
+          cp -a root/* staging/
+          mkdir -p staging/www
+          cp -a htdocs/* staging/www/
+
+          # Create data tarball
+          tar czf data.tar.gz -C staging .
+
+          # Create control files
+          mkdir -p control_dir
+          SIZE=$(du -sb staging | awk '{print $1}')
+
+          cat > control_dir/control <<EOF
+          Package: ${PKG_NAME}
+          Version: ${VERSION}
+          Depends: luci-base, iwinfo
+          Section: luci
+          Architecture: ${ARCH}
+          Installed-Size: ${SIZE}
+          Description: WiFi presence monitoring with Telegram alerts, privacy rules, and unknown device detection
+          EOF
+          # Remove leading whitespace from heredoc
+          sed -i 's/^          //' control_dir/control
+
+          printf '/etc/config/wifi-presence\n' > control_dir/conffiles
+
+          cat > control_dir/postinst <<'EOF'
+          #!/bin/sh
+          [ -n "${IPKG_INSTROOT}" ] || {
+            /etc/init.d/wifi-presence enable
+            /etc/init.d/rpcd restart
+          }
+          exit 0
+          EOF
+          sed -i 's/^          //' control_dir/postinst
+          chmod +x control_dir/postinst
+
+          cat > control_dir/prerm <<'EOF'
+          #!/bin/sh
+          [ -n "${IPKG_INSTROOT}" ] || {
+            /etc/init.d/wifi-presence stop
+            /etc/init.d/wifi-presence disable
+          }
+          exit 0
+          EOF
+          sed -i 's/^          //' control_dir/prerm
+          chmod +x control_dir/prerm
+
+          tar czf control.tar.gz -C control_dir .
+
+          # Build .ipk (ar archive: debian-binary + control + data)
+          echo "2.0" > debian-binary
+          ar r "${IPK_FILE}" debian-binary control.tar.gz data.tar.gz
+
+          echo "Built ${IPK_FILE} ($(du -h "${IPK_FILE}" | cut -f1))"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: luci-app-wifi-presence_*.ipk
+          generate_release_notes: true
